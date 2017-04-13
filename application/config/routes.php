@@ -68,3 +68,6 @@ $route['play/(:any)'] = 'play/index/$1';
 
 $route['feed'] = 'home/feeds';
 $route['dg-feed/(:any)'] = 'home/viewfeed/$1';
+
+
+$route['save-schedule'] = 'home/schedule_save';

@@ -38,6 +38,7 @@ class Welcome extends CI_Controller {
         $this->form_validation->set_rules('upassword', 'Password', 'trim|required|callback_check_database');
 
         if ($this->form_validation->run() == FALSE) {
+            
             $this->load->view('welcome_page');
         } else {
             redirect('home');

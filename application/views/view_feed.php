@@ -1,3 +1,8 @@
+
+<?php
+$media_base_url = "$media_base_url";
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="app">
 
@@ -9,7 +14,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
         <link rel="stylesheet" href="<?= base_url("ba/css/app.v1.css"); ?>" type="text/css" /> 
         <link rel="shortcut icon" href="<?= base_url("ba/images/logo.png"); ?>"/>
-        
+        <link rel="stylesheet" type="text/css" media="screen" href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script type="text/javascript"
+                src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+        </script>
+        <script type="text/javascript"
+                src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
+        </script>
         <!--[if lt IE 9]> 
         <script src="js/ie/html5shiv.js"></script> 
         <script src="js/ie/respond.min.js"></script> 
@@ -122,9 +135,9 @@
                         <section class="vbox">
 
                             <?php
-                            foreach ($vdata as $vdata_row) {
-                                $groupName = $vdata_row->DisplayGroup;
-                                $groupId = $vdata_row->displaygroupid;
+                            foreach ($dgroup as $dgroup_row) {
+                                $groupName = $dgroup_row->DisplayGroup;
+                                $groupId = $dgroup_row->DisplayGroupID;
                             }
                             ?>
 
@@ -137,7 +150,7 @@
 
                             <section class="scrollable wrapper">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-md-12">
 
                                         <!-- display groups -->
                                         <section class="panel panel-default pos-rlt clearfix">
@@ -146,39 +159,105 @@
                                                 <?php echo $groupName; ?> Display Group
                                             </header>
 
-                                            <div class="panel-body clearfix">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-left">ID</th>
-                                                            <th class="text-left">Media Name</th>
-                                                            <th class="text-left">StoredAs</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                                            <div class="panel-body clearfix" id="schedules">
+                                                <div>
+                                                    <div class="row">
+
+                                                        <div class="col-md-1">Site Code</div>
+                                                        <div class="col-md-3">Media URL</div>
+                                                        <div class="col-md-3">Play Date/Time</div>
+                                                        <div class="col-md-3">Stop Date/Time</div>
+                                                        <div class="col-md-2">Action</div>
+
+                                                    </div>
+                                                    <div>
                                                         <?php
                                                         foreach ($vdata as $vdata_row):
+                                                            $siteCode = $vdata_row->DisplayGroupID;
                                                             $mediaName = $vdata_row->name;
                                                             $mediaStoredAs = $vdata_row->storedAs;
                                                             $mediaId = $vdata_row->mediaid;
+                                                            
+                                                            
+                                                            $this->db->where('displayGroup', $siteCode);
+                                                            $this->db->where('mediaUrl', "/$mediaStoredAs");
+                                                            $play_times = $this->db->get('site_schedule');
+                                                            foreach ($play_times->result() as $play_times_row){
+                                                                $playStart = $play_times_row->playStart;
+                                                                $playStop = $play_times_row->playStop;
+                                                                
+                                                            }
                                                             ?>
-                                                            <tr>
-                                                                <td align="left"><?= $mediaId; ?></td>
-                                                                <td align="left"><?= $mediaName; ?></td>
-                                                                <td align="left"><?= $mediaStoredAs; ?></td>
-                                                            </tr>
+                                                            <form method="post" action="<?= base_url("save-schedule"); ?>">
+                                                                <input type="hidden" name="site_code" value="<?= $siteCode; ?>"/>
+                                                                <input type="hidden" name="media_url" value="<?= "$media_base_url/$mediaStoredAs"; ?>"/>
+                                                                <div class="row">
+                                                                    <div class="col-md-1"><?= $siteCode; ?></div>
+                                                                    <div class="col-md-3"><?= "$media_base_url/$mediaStoredAs"; ?></div>
+                                                                    <div class="col-md-3">
+                                                                        <div id="datetimepicker2<?= $mediaId; ?>" class="input-append form-group">
+                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_start" value="<?= $playStart; ?>">
+                                                                            <span class="add-on">
+                                                                                <i data-time-icon="i i-clock2" data-date-icon="i i-calendar"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <div id="datetimepicker3<?= $mediaId; ?>" class="input-append form-group">
+                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_stop" value="<?= $playStop; ?>">
+                                                                            <span class="add-on">
+                                                                                <i data-time-icon="i i-clock2" data-date-icon="i i-calendar"></i>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-2">
+                                                                        <input type="submit" value="Save" class="btn btn-default"/>
+                                                                    </div>
+                                                                </div>
+
+                                                                <script type="text/javascript">
+                                                                    $(function () {
+                                                                        $('#datetimepicker2<?= $mediaId; ?>').datetimepicker({
+                                                                            language: 'en',
+                                                                            pick12HourFormat: true
+                                                                        });
+                                                                    });
+
+                                                                    $(function () {
+                                                                        $('#datetimepicker3<?= $mediaId; ?>').datetimepicker({
+                                                                            language: 'en',
+                                                                            pick12HourFormat: true
+                                                                        });
+                                                                    });
+
+
+                                                                    var dateToday = new Date();
+
+
+                                                                    $.fn.datetimepicker.defaults = {
+                                                                        maskInput: true, // disables the text input mask
+                                                                        pickDate: true, // disables the date picker
+                                                                        pickTime: true, // disables de time picker
+                                                                        pick12HourFormat: false, // enables the 12-hour format time picker
+                                                                        pickSeconds: false, // disables seconds in the time picker
+                                                                        startDate: dateToday, // set a minimum date
+                                                                        endDate: Infinity          // set a maximum date
+                                                                    };
+                                                                </script>
+                                                            </form>
                                                             <?php
                                                         endforeach;
                                                         ?>
-                                                    </tbody>
-                                                </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </section>
                                         <!-- / display groups -->
 
                                     </div>
-
-                                    <div class="col-sm-6 portlet ui-sortable">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 portlet ui-sortable">
 
                                         <section class="panel panel-default portlet-item"> 
                                             <header class="panel-heading"> 
@@ -200,8 +279,8 @@
                                                             $vp_id = $vplay_row->mediaid;
                                                             $vp_stored = $this->Crud->get_stored_as($vp_id);
                                                             ?>
-                                                                    "http://localhost/scr/crescent/Xibo/<?php echo $vp_stored; ?>",
-                                                                     <?php endforeach; ?>
+                                                            "$media_base_url/<?php echo $vp_stored; ?>",
+<?php endforeach; ?>
                                                         ];
                                                                 document.getElementById("bo").onload = function () {
                                                             var all_videos = videos.length;
@@ -255,21 +334,25 @@
                 </section>
             </section>
         </section>
-        
-        
-         <div class="">
 
-            
+
+        <div class="">
+
+
 
 
         </div>
-        
-        
-        
+
+
+
 
 
         <!-- Bootstrap --> 
         <!-- App --> 
+
+
+
+
     </body>
 
 </html>

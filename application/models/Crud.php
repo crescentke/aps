@@ -37,6 +37,13 @@ class Crud extends CI_Model {
         return $return_all->result();
     }
 
+    function get_where($table, $column, $value) {
+        $this->db->where($column, $value);
+        $return_all = $this->db->get($table);
+
+        return $return_all->result();
+    }
+
     function get_group_info($id) {
         $this->db->where('lkmediadisplaygroup.displaygroupid', $id);
         $this->db->from('lkmediadisplaygroup');
@@ -81,10 +88,10 @@ class Crud extends CI_Model {
         $return_all = $this->db->get('media');
 
         $m_res = $return_all->result();
-        foreach ($m_res as $row){
+        foreach ($m_res as $row) {
             $mStoredAs = $row->storedAs;
         }
-        
+
         return$mStoredAs;
     }
 

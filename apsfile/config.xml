@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<sites>
+    
+    <0>
+        <scheduleId>8</scheduleId>
+        <displayGroup>18</displayGroup>
+        <mediaUrl>http://localhost/scr/crescent/Xibo/19.mp4</mediaUrl>
+        <playStart>04/13/2017 09:00 AM</playStart>
+        <playStop>04/13/2017 12:00 PM</playStop>
+    </0>
+
+    <1>
+        <scheduleId>9</scheduleId>
+        <displayGroup>18</displayGroup>
+        <mediaUrl>http://localhost/scr/crescent/Xibo/18.mp4</mediaUrl>
+        <playStart>04/13/2017 08:30 AM</playStart>
+        <playStop>04/18/2017 06:00 PM</playStop>
+    </1>
+
+</sites>
