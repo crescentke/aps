@@ -1,6 +1,6 @@
 
 <?php
-$media_base_url = "$media_base_url";
+$media_base_url = "http://localhost/scr/crescent";
 ?>
 
 <!DOCTYPE html>
@@ -178,14 +178,24 @@ $media_base_url = "$media_base_url";
                                                             $mediaStoredAs = $vdata_row->storedAs;
                                                             $mediaId = $vdata_row->mediaid;
                                                             
-                                                            
+
+
                                                             $this->db->where('displayGroup', $siteCode);
-                                                            $this->db->where('mediaUrl', "/$mediaStoredAs");
-                                                            $play_times = $this->db->get('site_schedule');
-                                                            foreach ($play_times->result() as $play_times_row){
+                                                            $this->db->where('mediaUrl', "$media_base_url/$mediaStoredAs");
+                                                            $play_time = $this->db->get('site_schedule');
+                                                            $play_times = $play_time->result();
+                                                            
+                                                            foreach ($play_times as $play_times_row) {
                                                                 $playStart = $play_times_row->playStart;
                                                                 $playStop = $play_times_row->playStop;
-                                                                
+                                                            }
+
+                                                            if (count($play_times) > 0) {
+                                                                $startPlay = $playStart;
+                                                                $stopPlay = $playStop;
+                                                            } else {
+                                                                $startPlay = "";
+                                                                $stopPlay = "";
                                                             }
                                                             ?>
                                                             <form method="post" action="<?= base_url("save-schedule"); ?>">
@@ -196,7 +206,7 @@ $media_base_url = "$media_base_url";
                                                                     <div class="col-md-3"><?= "$media_base_url/$mediaStoredAs"; ?></div>
                                                                     <div class="col-md-3">
                                                                         <div id="datetimepicker2<?= $mediaId; ?>" class="input-append form-group">
-                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_start" value="<?= $playStart; ?>">
+                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_start" value="<?= $startPlay; ?>">
                                                                             <span class="add-on">
                                                                                 <i data-time-icon="i i-clock2" data-date-icon="i i-calendar"></i>
                                                                             </span>
@@ -204,7 +214,7 @@ $media_base_url = "$media_base_url";
                                                                     </div>
                                                                     <div class="col-md-3">
                                                                         <div id="datetimepicker3<?= $mediaId; ?>" class="input-append form-group">
-                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_stop" value="<?= $playStop; ?>">
+                                                                            <input data-format="MM/dd/yyyy HH:mm PP" type="text" placeholder="MM/DD/YYYY HH:mm PP" class="form-control" required="" name="play_stop" value="<?= $stopPlay; ?>">
                                                                             <span class="add-on">
                                                                                 <i data-time-icon="i i-clock2" data-date-icon="i i-calendar"></i>
                                                                             </span>
@@ -257,7 +267,7 @@ $media_base_url = "$media_base_url";
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12 portlet ui-sortable">
+                                    <div class="col-md-6 portlet ui-sortable">
 
                                         <section class="panel panel-default portlet-item"> 
                                             <header class="panel-heading"> 
@@ -265,7 +275,7 @@ $media_base_url = "$media_base_url";
                                             </header> 
                                             <section class="panel-body"> 
 
-                                                <p> 
+                                                <p class="hidden"> 
                                                     <a href="<?= base_url("play?dg=$groupId"); ?>" title="Launch Player" target="_blank">
                                                         <span class="label bg-success">Launch Player</span> 
                                                     </a>
@@ -274,15 +284,16 @@ $media_base_url = "$media_base_url";
                                                 <div id="demo">
 
                                                     <script type = "text/javascript">
+                                                        var media_base_url = "http://localhost/scr/crescent/Xibo";
                                                         var videos = [<?php
                                                         foreach ($vdata as $vplay_row):
                                                             $vp_id = $vplay_row->mediaid;
                                                             $vp_stored = $this->Crud->get_stored_as($vp_id);
                                                             ?>
-                                                            "$media_base_url/<?php echo $vp_stored; ?>",
+                                                                media_base_url + "/<?php echo $vp_stored; ?>",
 <?php endforeach; ?>
                                                         ];
-                                                                document.getElementById("bo").onload = function () {
+                                                        document.getElementById("bo").onload = function () {
                                                             var all_videos = videos.length;
                                                             var source = document.createElement('source');
                                                             function addSourceToVideo(element, src, type) {
@@ -294,7 +305,7 @@ $media_base_url = "$media_base_url";
                                                             video.muted = !0;
                                                             video.controls = !1;
                                                             video.height = 165;
-                                                            video.width = 510.5;
+                                                            video.width = 300;
                                                             document.getElementById("demo").appendChild(video);
                                                             if (all_videos === 1) {
                                                                 addSourceToVideo(video, videos[0], 'video/mp4');

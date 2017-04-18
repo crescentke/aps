@@ -109,7 +109,7 @@
                                 </div>
                             </section>
                             <footer class="footer hidden-xs no-padder text-center-nav-xs">
-                                <a href="http:://bluewave.co.ke" target="_blank class="btn btn-icon icon-muted btn-inactive m-l-xs m-r-xs">                                     
+                                <a href="http:://bluewave.co.ke" target="_blank" class="btn btn-icon icon-muted btn-inactive m-l-xs m-r-xs">                                     
                                     &copy;2017 BlueAds
                                 </a>
                             </footer>
@@ -186,7 +186,7 @@
                                             </header> 
                                             <section class="panel-body"> 
 
-                                                <p> 
+                                                <p class="hidden"> 
                                                     <a href="<?= base_url("play/$groupId"); ?>" title="Launch Player">
                                                         <span class="label bg-success">Launch Player</span> 
                                                     </a>
@@ -215,7 +215,7 @@
                                                             video.muted = !0;
                                                             video.controls = !1;
                                                             video.height = 165;
-                                                            video.width = 510.5;
+                                                            video.width = 300;
                                                             document.getElementById("demo").appendChild(video);
                                                             if (all_videos === 1) {
                                                                 addSourceToVideo(video, videos[0], 'video/mp4');

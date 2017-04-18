@@ -60,14 +60,30 @@ class Home extends CI_Controller {
     }
 
     function schedule_save() {
-        $data = array(
-            'displayGroup' => $this->input->post('site_code'),
-            'mediaUrl' => $this->input->post('media_url'),
-            'playStart' => $this->input->post('play_start'),
-            'playStop' => $this->input->post('play_stop')
-        );
+        $this->db->where('displayGroup', $this->input->post('site_code'));
+        $this->db->where('mediaUrl', $this->input->post('media_url'));
+        $play_time = $this->db->get('site_schedule');
+        $play_times = $play_time->result();
 
-        $this->db->insert('site_schedule', $data);
+        if (count($play_times) > 0) {
+            $data = array(
+                'playStart' => $this->input->post('play_start'),
+                'playStop' => $this->input->post('play_stop')
+            );
+
+            $this->db->where('displayGroup', $this->input->post('site_code'));
+            $this->db->where('mediaUrl', $this->input->post('media_url'));
+            $this->db->update('site_schedule', $data);
+        } else {
+            $data = array(
+                'displayGroup' => $this->input->post('site_code'),
+                'mediaUrl' => $this->input->post('media_url'),
+                'playStart' => $this->input->post('play_start'),
+                'playStop' => $this->input->post('play_stop')
+            );
+
+            $this->db->insert('site_schedule', $data);
+        }
 
         redirect("dg-feed/" . $this->input->post('site_code'));
     }
@@ -97,7 +113,7 @@ class Home extends CI_Controller {
 
         echo '<pre>';
         print($xml->asXML());
-        
+
         $data = $xml->asXML();
         if (!write_file('./apsfile/config.xml', $data)) {
             echo 'Unable to write the file';
@@ -105,6 +121,5 @@ class Home extends CI_Controller {
             echo 'File written!';
         }
     }
-
 
 }

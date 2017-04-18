@@ -159,7 +159,7 @@
                                                                 <td align="left"><?= $d_name; ?></td>
                                                                 <td align="left"><?= $d_description; ?></td>
                                                                 <td align="right">
-                                                                    <a href="<?= base_url("viewgroup/$d_id"); ?>">
+                                                                    <a href="<?= base_url("dg-feed/$d_id"); ?>">
                                                                         <button class="btn btn-default btn-icon btn-rounded btn-sm" type="button">Go</button>
                                                                     </a>
                                                                 </td>
